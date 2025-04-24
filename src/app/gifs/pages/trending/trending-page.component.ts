@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import DashboardPageComponent from "../dashboard-page/dashboard-page.component";
+import DashboardPageComponent from "../../../pages/dashboard-page/dashboard-page.component";
 
 @Component({
   selector: 'app-trending',
-  imports: [DashboardPageComponent],
+  imports: [],
   templateUrl: './trending-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -3,7 +3,7 @@ import DashboardPageComponent from "../dashboard-page/dashboard-page.component";
 
 @Component({
   selector: 'app-search',
-  imports: [DashboardPageComponent],
+  imports: [],
   templateUrl: './search-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
