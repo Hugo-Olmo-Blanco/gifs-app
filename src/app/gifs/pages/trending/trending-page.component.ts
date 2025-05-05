@@ -1,36 +1,53 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { GifListComponent } from "../../components/gif-list/gif-list.component";
+import { AfterViewInit, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { GifService } from '../../services/gifs.service';
+import { ScrollStateService } from 'src/app/shared/services/scroll-state';
 
- const imageUrls: string[] = [
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg",
-  "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg"
-
-];
+ 
 
 
 @Component({
   selector: 'app-trending',
-  imports: [GifListComponent,],
+  imports: [],
   templateUrl: './trending-page.component.html',
  
 })
-export default class TrendingComponent {
-  gifsTC = signal (imageUrls);
+export default class TrendingComponent implements AfterViewInit {
+ 
 
   gifService = inject(GifService)
+  scrollStateService = inject(ScrollStateService);
+
+  scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('groupDiv')
 
 
+
+  ngAfterViewInit(): void {
+    const scrollDiv = this.scrollDivRef()?.nativeElement
+    if (!scrollDiv)return;
+
+    scrollDiv.scrollTop = this.scrollStateService.trendingScrollState();
+    
+  }
+
+
+  onScroll(event:Event){
+    const scrollDiv = this.scrollDivRef()?.nativeElement
+    if (!scrollDiv)return;
+
+    const scrollTop = scrollDiv.scrollTop;
+    const clientHeight = scrollDiv.clientHeight;
+    const scrollHeight = scrollDiv.scrollHeight;
+    const isAtBottom = scrollTop + clientHeight + 300 >= scrollHeight;
+
+    this.scrollStateService.trendingScrollState.set(scrollTop);
+
+    console.log(clientHeight, scrollHeight)
+
+    if (isAtBottom){
+      this.gifService.loadTrendingGifs();
+
+    }
+  }
   
 
  }
